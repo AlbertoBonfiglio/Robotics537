@@ -5,8 +5,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>8a48124c-5778-4bf7-a9af-5b82f6070c1d</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>
-    </StartupFile>
+    <StartupFile>main.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
@@ -34,10 +33,14 @@
   <ItemGroup>
     <Folder Include="classes\" />
     <Folder Include="classes\__pycache__\" />
+    <Folder Include="requirements\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="classes\__pycache__\armedbandit.cpython-34.pyc" />
     <Content Include="classes\__pycache__\armedbandit2.cpython-34.pyc" />
+    <Content Include="requirements\HW3_sample1_me537.pdf" />
+    <Content Include="requirements\HW3_sample2_me537.pdf" />
+    <Content Include="requirements\ROB_537_HW3_Sample.pdf" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
