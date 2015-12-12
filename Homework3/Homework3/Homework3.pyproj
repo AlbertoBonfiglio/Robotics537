@@ -5,7 +5,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>8a48124c-5778-4bf7-a9af-5b82f6070c1d</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>main.py</StartupFile>
+    <StartupFile>classes\armedbandit3.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
@@ -24,6 +24,9 @@
   <ItemGroup>
     <Compile Include="classes\armedbandit.py" />
     <Compile Include="classes\armedbandit2.py" />
+    <Compile Include="classes\armedbandit3.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="classes\__init__.py">
       <SubType>Code</SubType>
     </Compile>

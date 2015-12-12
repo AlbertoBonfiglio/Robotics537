@@ -4,18 +4,27 @@ import numpy as np
 import matplotlib.pyplot as plt
 import datetime as dt
 from scipy import stats
-from classes.armedbandit2 import ArmedBandit2, Arm
+
+from classes.armedbandit2 import ArmedBandit2 #, Arm
+from classes.armedbandit3 import ArmedBandit3 #, Arm
 
 
-if __name__ == '__main__':
 
-    runs = 10
+def runArmedBandit2Test():
+    # run 10 times
+    #    
+    _mu = [1, 1.5, 2, 2, 1.75]
+    _sigma = [5, 1, 1, 2, 10]
 
-    bandit = ArmedBandit2(5)
+    _value = np.mean(_mu)
+    runs = 5
+    epochs = 500
+
+    bandit = ArmedBandit2(5, mu=_mu, sigma=_sigma, startValue=_value)
     accumulator = []
     
     fig, axs = plt.subplots(nrows=2, ncols=2, sharex=True)
-    x = np.arange(250)
+    x = np.arange(epochs)
     
     ax = axs[0,0]   
    
@@ -24,7 +33,7 @@ if __name__ == '__main__':
     y = []
     for i in range(runs):
         start = dt.datetime.now()
-        accumulator.append(bandit.performOneArmRobberyEGreedy(epochs=250, iterations=10, epsilon=0))
+        accumulator.append(bandit.performOneArmRobberyEGreedy(epochs=epochs, iterations=10, epsilon=0))
         print('Run 10-0 #' + str(i) + ' took ' + str((dt.datetime.now() - start).total_seconds()) + ' seconds') 
 
     accumulator2 = np.array(accumulator)
@@ -41,7 +50,7 @@ if __name__ == '__main__':
     y = []
     for i in range(runs):
         start = dt.datetime.now()
-        accumulator.append(bandit.performOneArmRobberyEGreedy(epochs=250, iterations=10, epsilon=0.1))
+        accumulator.append(bandit.performOneArmRobberyEGreedy(epochs=epochs, iterations=10, epsilon=0.1))
         print('Run 10-0.1 #' + str(i) + ' took ' + str((dt.datetime.now() - start).total_seconds()) + 'seconds') 
 
     accumulator2 = np.array(accumulator)
@@ -61,7 +70,7 @@ if __name__ == '__main__':
 
     for i in range(runs):
         start = dt.datetime.now()
-        accumulator.append(bandit.performOneArmRobberyEGreedy(epochs=250, iterations=100, epsilon=0))
+        accumulator.append(bandit.performOneArmRobberyEGreedy(epochs=epochs, iterations=100, epsilon=0))
         print('Run 100-0 #' + str(i) + ' took ' + str((dt.datetime.now() - start).total_seconds()) + 'seconds') 
 
     accumulator2 = np.array(accumulator)
@@ -78,7 +87,7 @@ if __name__ == '__main__':
     y = []
     for i in range(runs):
         start = dt.datetime.now()
-        accumulator.append(bandit.performOneArmRobberyEGreedy(epochs=250, iterations=100, epsilon=0.1))
+        accumulator.append(bandit.performOneArmRobberyEGreedy(epochs=epochs, iterations=100, epsilon=0.1))
         print('Run 100-0.1 #' + str(i) + ' took ' + str((dt.datetime.now() - start).total_seconds()) + 'seconds') 
 
     accumulator2 = np.array(accumulator)
@@ -95,3 +104,13 @@ if __name__ == '__main__':
     plt.show()
 
     pass
+
+
+def runArmedBandit3Test():
+    pass
+
+if __name__ == '__main__':
+    
+    runArmedBandit2Test()
+
+    runArmedBandit3Test()

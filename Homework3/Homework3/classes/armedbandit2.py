@@ -36,21 +36,10 @@ class Arm(object):
 
     def getReward(self): #fix this
         reward = 0
-        #for i in range(self.iterations):
-        #    r = +np.random.normal(self.mu, self.sigma)
-        #    if r < self.probability:
-        #        reward += 1
-
         for i in range(self.iterations):
             reward = reward + np.random.normal(self.mu, self.sigma)
-            
-
         return reward/self.iterations
-        #return np.random.normal(self.mu, math.sqrt(self.sigma))
-
-
-
-
+        
 
 class ArmedBandit2(object):
     n = 10
@@ -62,17 +51,17 @@ class ArmedBandit2(object):
     #initialize memory array; has 1 row defaulted to random action index
     av = []
 
-    def __init__(self, n=5, mu = [1, 1.5, 2, 2, 1.75], sigma=[5, 1, 1, 2, 10]):
+    def __init__(self, n=5, mu = [1, 1.5, 2, 2, 1.75], sigma=[5, 1, 1, 2, 10], startValue=0):
         try:
             self.n = n
 
             self._mu = mu
             self._sigma = sigma
+            self.startValue = startValue
 
             for count in range(len(self._mu)):
-                obj = Arm(self._mu[count], self._sigma[count], np.mean(self._mu))
+                obj = Arm(self._mu[count], self._sigma[count], startValue)
                 self.arms.append(obj)
-
  
             pass
         except Exception as ex:
@@ -99,16 +88,16 @@ class ArmedBandit2(object):
             print(ex.args)
 
 
-    def performOneArmRobberyEGreedy(self, epochs=500, iterations=10, epsilon=0.1):
+    def performOneArmRobberyEGreedy(self, epochs=500, iterations=10, epsilon=0.1, ):
         retval = []
 
         self.epsilon = epsilon
-        try:           #self.av = np.array([n-1, np.mean(self._mu)])
-            self.av =  np.array([0, np.mean(self._mu)]).reshape(1, 2)
-            self.av =  np.concatenate((self.av, [[1, np.mean(self._mu)]]), axis=0)
-            self.av =  np.concatenate((self.av, [[2, np.mean(self._mu)]]), axis=0)
-            self.av =  np.concatenate((self.av, [[3, np.mean(self._mu)]]), axis=0)
-            self.av =  np.concatenate((self.av, [[4, np.mean(self._mu)]]), axis=0)
+        try:           
+            self.av =  np.array([0, self.startValue]).reshape(1, 2)
+            self.av =  np.concatenate((self.av, [[1,self.startValue]]), axis=0)
+            self.av =  np.concatenate((self.av, [[2, self.startValue]]), axis=0)
+            self.av =  np.concatenate((self.av, [[3, self.startValue]]), axis=0)
+            self.av =  np.concatenate((self.av, [[4, self.startValue]]), axis=0)
 
             for i in range(epochs):
                 if random.random() > self.epsilon: #greedy arm selection
