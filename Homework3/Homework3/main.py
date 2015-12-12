@@ -107,10 +107,18 @@ def runArmedBandit2Test():
 
 
 def runArmedBandit3Test():
+    runs = 5
+    epochs = 500
+    accumulator = []
+
+    bandit = ArmedBandit3()
+    for i in range(runs):
+        accumulator.append(bandit.performOneArmRobberyEGreedy(250, 20, 0))
+
     pass
 
 if __name__ == '__main__':
     
-    runArmedBandit2Test()
+#    runArmedBandit2Test()
 
     runArmedBandit3Test()

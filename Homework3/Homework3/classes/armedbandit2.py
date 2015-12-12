@@ -88,7 +88,7 @@ class ArmedBandit2(object):
             print(ex.args)
 
 
-    def performOneArmRobberyEGreedy(self, epochs=500, iterations=10, epsilon=0.1, ):
+    def performOneArmRobberyEGreedy(self, epochs=500, iterations=10, epsilon=0.1):
         retval = []
 
         self.epsilon = epsilon
@@ -122,6 +122,6 @@ class ArmedBandit2(object):
         except Exception as ex:
             print(ex.args)
 
-        plt.show()
+        
 
 
