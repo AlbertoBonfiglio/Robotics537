@@ -13,6 +13,7 @@ NOWHERE = 0
 EXIT = 100
 UNEXPLORED = -1
 EXPLORED  = 0
+
 class Position(object):
     x = 0
     y = 0

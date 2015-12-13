@@ -27,6 +27,9 @@
     <Compile Include="classes\armedbandit3.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="classes\qlearner.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="classes\__init__.py">
       <SubType>Code</SubType>
     </Compile>

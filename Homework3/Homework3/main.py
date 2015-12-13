@@ -7,7 +7,7 @@ from scipy import stats
 
 from classes.armedbandit2 import ArmedBandit2 #, Arm
 from classes.armedbandit3 import ArmedBandit3 #, Arm
-
+from classes.qlearner import Explorer 
 
 
 def runArmedBandit2Test():
@@ -157,10 +157,21 @@ def runArmedBandit3Test():
     plt.show()
 
 
+def runQLearningTest():
+    explorer = Explorer()
+    paths = []
+    for n in range(runs):
+        paths.append(explorer.findPath(250))
+
+
+    
+
 
 
 if __name__ == '__main__':
     
 #    runArmedBandit2Test()
 
-    runArmedBandit3Test()
+#    runArmedBandit3Test()
+
+    runQLearningTest()
