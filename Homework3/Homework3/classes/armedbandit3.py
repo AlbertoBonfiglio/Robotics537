@@ -10,7 +10,9 @@ RIGHT = 2
 DOWN = 3
 LEFT = 4
 NOWHERE = 0
-
+EXIT = 100
+UNEXPLORED = -1
+EXPLORED  = 0
 class Position(object):
     x = 0
     y = 0
@@ -23,54 +25,68 @@ class Arm(object):
     pullCount = 0
     current_value = 0.0
     iterations = 20
-    position_matrix = np.full((5, 10),-1)
+    position_matrix = np.full((5, 10), UNEXPLORED)  # Y,X
     current_position = Position()
     exit_position = Position()
 
     
     def __init__(self):
-        self.position_matrix[2, 9] = 100
-        print self.position_matrix[2, 9]
-        self.exit_position.x = 2
-        self.exit_position.y = 9
+        self.position_matrix[2, 9] = EXIT
+        self.exit_position.y = 2
+        self.exit_position.x = 9
 
             
     def pullArm(self, iterations=10):
-        self.pullCount += 1
-        n = self.pullCount
+        try:
+            self.pullCount += 1
+            n = self.pullCount
  
-        self.iterations = iterations
+            self.iterations = iterations
  
-        self.current_position.x = np.random.randint(0, 8)
-        self.current_position.y = np.random.randint(0, 4)
-         
-        value = self.current_value
-        self.current_value = ((n -1)/float(n)) * value + (1 / float(n)) * self.getReward(self.current_position)
+            self.position_matrix = np.full((5, 10), UNEXPLORED)
+            self.position_matrix[2, 9] = EXIT
         
-        return self.current_value
+            self.current_position.x = np.random.randint(0, 8)
+            self.current_position.y = np.random.randint(0, 4)
+         
+            
+            value = self.current_value
+            self.current_value = ((n -1)/float(n)) * value + (1 / float(n)) * self.getReward(self.current_position)
+       
+
+#            print self.position_matrix[0]
+#            print self.position_matrix[1]
+#            print self.position_matrix[2]
+##            print self.position_matrix[3]
+#            print self.position_matrix[4]
+#            print '-------------------------------------------------------------------'
+
+            return self.current_value
+        except Exception as ex:
+            print('PullArm Exception: ' + ex.message)
+
+
 
 
     def getReward(self, position): 
-        # basically we pick a random possible move from the current position out of 5  n times
-        # and we sum the reward
-        reward = 0
-        for i in range(self.iterations):
-            moves = self.getAvailableMoves(position)
-            move = np.random.choice(moves)
-            
-            if move == UP:
-                position.y = position.y -1
-            if move == DOWN:
-                position.y = position.y +1
-            if move == RIGHT:
-                position.x = position.x +1
-            if move == LEFT:
-                position.x = position.x -1
-            
-            print(position.x)         
-            reward = reward + self.isExitFound(position)
+        try:
+            # basically we pick a random possible move from the current position out of 5 positions
+            # and we sum the reward
+            reward = 0
+            for i in range(self.iterations):
+                moves = self.getAvailableMoves(position)
+                self.getNewPosition(moves, position)            
         
-        return reward
+                # update the position matrix to show where the exploration led
+                self.position_matrix[position.y, position.x] = EXPLORED
+        
+                stepReward = self.isExitFound(position)
+                reward = reward + stepReward
+                if stepReward == EXIT: break 
+
+            return reward
+        except Exception as ex:
+            print('getReward Exception: ' + ex.message)
 
 
     def getAvailableMoves(self, position):
@@ -81,16 +97,28 @@ class Arm(object):
             retval.remove(RIGHT)
         if (position.y == 0):
             retval.remove(UP)
-        if (position.x == 4):
+        if (position.y == 4):
             retval.remove(DOWN)
         
         return retval
 
 
+    def getNewPosition(self, moves, position):
+        move = np.random.choice(moves)
+        if move == UP:
+            position.y = position.y -1
+        if move == DOWN:
+            position.y = position.y +1
+        if move == RIGHT:
+            position.x = position.x +1
+        if move == LEFT:
+            position.x = position.x -1
+            
+
     def isExitFound(self, position):
-        retval = -1
+        retval = UNEXPLORED
         if (position == self.exit_position):
-            retval = 100
+            retval = EXIT
         return retval
                    
     

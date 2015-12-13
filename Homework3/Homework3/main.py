@@ -21,7 +21,6 @@ def runArmedBandit2Test():
     epochs = 500
 
     bandit = ArmedBandit2(5, mu=_mu, sigma=_sigma, startValue=_value)
-    accumulator = []
     
     fig, axs = plt.subplots(nrows=2, ncols=2, sharex=True)
     x = np.arange(epochs)
@@ -107,15 +106,58 @@ def runArmedBandit2Test():
 
 
 def runArmedBandit3Test():
-    runs = 5
+    runs = 10
     epochs = 500
-    accumulator = []
-
+   
     bandit = ArmedBandit3()
+   
+    fig, axs = plt.subplots(nrows=2, ncols=2, sharex=True)
+    x = np.arange(epochs)
+    
+    ax = axs[0,0]   
+   
+    accumulator = []
+    errors = []
+    y = []
     for i in range(runs):
-        accumulator.append(bandit.performOneArmRobberyEGreedy(250, 20, 0))
+        start = dt.datetime.now()
+        accumulator.append(bandit.performOneArmRobberyEGreedy(epochs=epochs, iterations=20, epsilon=0))
+        print('Run 10-0 #' + str(i) + ' took ' + str((dt.datetime.now() - start).total_seconds()) + ' seconds') 
 
-    pass
+    accumulator2 = np.array(accumulator)
+    for i in range(len(accumulator[0])):
+        errors.append(stats.sem(accumulator2[: ,i], axis=None, ddof=0))
+        y.append(np.mean(accumulator2[: ,i]))
+ 
+    ax.plot(x, y, 'r')
+    ax.errorbar(x, y, yerr=errors) #, fmt='o')
+
+    #--------------------------------------------
+    accumulator = []
+    errors = []
+    y = []
+    for i in range(runs):
+        start = dt.datetime.now()
+        accumulator.append(bandit.performOneArmRobberyEGreedy(epochs=epochs, iterations=20, epsilon=0.1))
+        print('Run 10-0.1 #' + str(i) + ' took ' + str((dt.datetime.now() - start).total_seconds()) + 'seconds') 
+
+    accumulator2 = np.array(accumulator)
+    for i in range(len(accumulator[0])):
+        errors.append(stats.sem(accumulator2[: ,i], axis=None, ddof=0))
+        y.append(np.mean(accumulator2[: ,i]))
+
+    ax.plot(x, y, 'g')
+    ax.errorbar(x, y, yerr=errors) #, fmt='o')
+
+
+
+
+    fig.suptitle('Variable errorbars')
+
+    plt.show()
+
+
+
 
 if __name__ == '__main__':
     
