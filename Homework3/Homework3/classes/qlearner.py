@@ -86,7 +86,7 @@ class Explorer(object):
 
         self.current_state = self.getRandomStart()
   
-        self.agent = qLearner(self.current_state, epsilon=0, alpha=0.2, gamma=0.9)
+        self.agent = qLearner(self.current_state, self.exit_state, epsilon, alpha, gamma)
 
         for i in range(explorations):
             
@@ -112,13 +112,13 @@ class Explorer(object):
 
 class qLearner(object):
     
-    def __init__(self, state, epsilon=0.0, alpha=0., gamma=0.9):
+    def __init__(self, state, exit, epsilon=0.0, alpha=0., gamma=0.9):
         self.q = {}
         self.epsilon = epsilon #e-greedy variable 
         self.alpha = alpha #learning rate
         self.gamma = gamma #discount factor
         self.actions = state.getAvailableActions()
-
+        self.exit = exit
 
     def updateActions(self, state, lastAction):
         self.actions = state.getAvailableActions()
@@ -140,10 +140,11 @@ class qLearner(object):
         oldValue = self.q.get((state, action), None)
         if oldValue is None:
             self.q[(state, action)] = reward
-            #self.q[(state, action)] = np.random.randint(-1, 1)
         else:
-            #self.q[(state, action)] = oldValue + self.alpha * (value - oldValue)
-            self.q[(state, action)] += self.alpha * (value - oldValue)
+            if state == self.exit:
+                self.q[(state, action)] = self.q[(state, action)]
+            else:    
+                self.q[(state, action)] += self.alpha * (value - oldValue)
 
 
     def chooseAction(self, state):

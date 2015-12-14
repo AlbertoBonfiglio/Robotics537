@@ -158,8 +158,8 @@ def runArmedBandit3Test():
 
 
 def runQLearningTest():
-    runs = 150
-    epochs = 500
+    runs = 500
+    epochs = 250
    
     bandit = Explorer()
    
