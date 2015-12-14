@@ -158,13 +158,57 @@ def runArmedBandit3Test():
 
 
 def runQLearningTest():
-    explorer = Explorer()
-    paths = []
-    for n in range(runs):
-        paths.append(explorer.findPath(250))
-
-
+    runs = 150
+    epochs = 500
+   
+    bandit = Explorer()
+   
+    fig, axs = plt.subplots(nrows=1, ncols=2, sharex=True)
+    x = np.arange(epochs)
     
+    ax = axs[0]   
+    accumulator = []
+    errors = []
+    y = []
+    for i in range(runs):
+        start = dt.datetime.now()
+        accumulator.append(bandit.findPath(epochs, epsilon=0, alpha=0.2, gamma=0.9))
+        print('Run 10-0 #' + str(i) + ' took ' + str((dt.datetime.now() - start).total_seconds()) + ' seconds') 
+
+    accumulator2 = np.array(accumulator)
+    for i in range(len(accumulator[0])):
+        errors.append(stats.sem(accumulator2[: ,i]/2, axis=None, ddof=0))
+        y.append(np.mean(accumulator2[: ,i]))
+    ax.plot(x, y, 'b', label='Greedy', linewidth=2)
+    ax.errorbar(x, y, yerr=errors, ecolor='g') #, fmt='o')
+    ax.legend(loc='upper left', shadow=True)
+    ax.set_ylabel('Reward')
+    ax.set_xlabel('Epochs')
+    #--------------------------------------------
+    
+    ax = axs[1]   
+    accumulator = []
+    errors = []
+    y = []
+    for i in range(runs):
+        start = dt.datetime.now()
+        accumulator.append(bandit.findPath(epochs, epsilon=0.5, alpha=0.2, gamma=0.9))
+        print('Run 10-0 #' + str(i) + ' took ' + str((dt.datetime.now() - start).total_seconds()) + ' seconds') 
+
+    accumulator2 = np.array(accumulator)
+    for i in range(len(accumulator[0])):
+        errors.append(stats.sem(accumulator2[: ,i]/2, axis=None, ddof=0))
+        y.append(np.mean(accumulator2[: ,i]))
+    
+    ax.plot(x, y, 'r--', label='e-Greedy', linewidth=2)
+    ax.errorbar(x, y, yerr=errors, ecolor='r') #, fmt='o')
+    ax.legend(loc='upper left', shadow=True)
+    ax.set_xlabel('Epochs')
+
+    fig.suptitle('Q-Learning - Greedy vs e-Greedy ')
+
+
+    plt.show()
 
 
 

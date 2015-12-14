@@ -81,42 +81,50 @@ class Explorer(object):
         return self.environment_matrix[np.random.randint(4)][np.random.randint(9)]                    
     
 
-    def findPath(self, explorations=500):
+    def findPath(self, explorations=500, epsilon=0, alpha=0.2, gamma=0.9):
         retval= []
+
         self.current_state = self.getRandomStart()
   
         self.agent = qLearner(self.current_state, epsilon=0, alpha=0.2, gamma=0.9)
 
         for i in range(explorations):
+            
             action = self.agent.chooseAction(self.current_state)
             last_state = self.current_state
             move_state = last_state.move(action)
             new_state = self.environment_matrix[move_state.y][move_state.x]
 
-            self.agent.updateActions(new_state)
-
             reward = -1
             if new_state == self.exit_state:
                 reward = 100
-
+                       
             self.agent.learn(last_state, action, reward, new_state)
+            
             self.current_state = new_state
-
+            self.agent.updateActions(new_state, action)
+            
             retval.append(self.agent.getQ(last_state, action))
+        
+        return retval
+
 
 
 class qLearner(object):
     
-    def __init__(self, state, epsilon=0.0, alpha=0.2, gamma=0.9):
+    def __init__(self, state, epsilon=0.0, alpha=0., gamma=0.9):
         self.q = {}
-        self.epsilon = epsilon
-        self.alpha = alpha
-        self.gamma = gamma
+        self.epsilon = epsilon #e-greedy variable 
+        self.alpha = alpha #learning rate
+        self.gamma = gamma #discount factor
         self.actions = state.getAvailableActions()
 
 
-    def updateActions(self, state):
+    def updateActions(self, state, lastAction):
         self.actions = state.getAvailableActions()
+        #if lastAction in self.actions: 
+        #    self.actions.remove(lastAction)
+        
     
 
     def getQ(self, state, action):
@@ -124,7 +132,7 @@ class qLearner(object):
 
 
     def learn(self, state1, action1, reward, state2):
-        maxQNew = max([self.getQ(state2, a) for a in self.actions])
+        maxQNew = max([self.getQ(state2, a) for a in self.actions]) #max of all possible actions
         self.learnQ(state1, action1, reward, reward + self.gamma * maxQNew)
         
         
@@ -132,14 +140,15 @@ class qLearner(object):
         oldValue = self.q.get((state, action), None)
         if oldValue is None:
             self.q[(state, action)] = reward
+            #self.q[(state, action)] = np.random.randint(-1, 1)
         else:
-            self.q[(state, action)] = oldValue + self.alpha * (value - oldValue)
+            #self.q[(state, action)] = oldValue + self.alpha * (value - oldValue)
+            self.q[(state, action)] += self.alpha * (value - oldValue)
 
 
     def chooseAction(self, state):
         if random.random() < self.epsilon:   
             action = random.choice(self.actions)
-
         else:
             q = [self.getQ(state, a) for a in self.actions]
             maxQ = max(q)
