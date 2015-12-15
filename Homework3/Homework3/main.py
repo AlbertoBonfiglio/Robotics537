@@ -158,9 +158,13 @@ def runArmedBandit3Test():
 
 
 def runQLearningTest():
-    runs = 500
-    epochs = 250
-   
+    runs = 1500
+    epochs = 500
+    _epsilon=0.1
+    _alpha=0.5
+    _gamma=0.9
+    
+    
     bandit = Explorer()
    
     fig, axs = plt.subplots(nrows=1, ncols=2, sharex=True)
@@ -172,18 +176,18 @@ def runQLearningTest():
     y = []
     for i in range(runs):
         start = dt.datetime.now()
-        accumulator.append(bandit.findPath(epochs, epsilon=0, alpha=0.2, gamma=0.9))
+        accumulator.append(bandit.findPath(epochs, 0, _alpha, _gamma))
         print('Run 10-0 #' + str(i) + ' took ' + str((dt.datetime.now() - start).total_seconds()) + ' seconds') 
 
     accumulator2 = np.array(accumulator)
     for i in range(len(accumulator[0])):
-        errors.append(stats.sem(accumulator2[: ,i]/2, axis=None, ddof=0))
+        errors.append(stats.sem(accumulator2[: ,i], axis=None, ddof=0))
         y.append(np.mean(accumulator2[: ,i]))
     ax.plot(x, y, 'b', label='Greedy', linewidth=2)
     ax.errorbar(x, y, yerr=errors, ecolor='g') #, fmt='o')
     ax.legend(loc='upper left', shadow=True)
     ax.set_ylabel('Reward')
-    ax.set_xlabel('Epochs')
+    ax.set_xlabel('Steps {0}, alpha {1}, gamma {2}'.format(epochs, _alpha, _gamma))
     #--------------------------------------------
     
     ax = axs[1]   
@@ -192,7 +196,7 @@ def runQLearningTest():
     y = []
     for i in range(runs):
         start = dt.datetime.now()
-        accumulator.append(bandit.findPath(epochs, epsilon=0.5, alpha=0.2, gamma=0.9))
+        accumulator.append(bandit.findPath(epochs, _epsilon, _alpha, _gamma))
         print('Run 10-0 #' + str(i) + ' took ' + str((dt.datetime.now() - start).total_seconds()) + ' seconds') 
 
     accumulator2 = np.array(accumulator)
@@ -203,9 +207,10 @@ def runQLearningTest():
     ax.plot(x, y, 'r--', label='e-Greedy', linewidth=2)
     ax.errorbar(x, y, yerr=errors, ecolor='r') #, fmt='o')
     ax.legend(loc='upper left', shadow=True)
-    ax.set_xlabel('Epochs')
-
-    fig.suptitle('Q-Learning - Greedy vs e-Greedy ')
+    ax.set_xlabel('Steps {0}, alpha {1}, gamma {2}'.format(epochs, _alpha, _gamma))
+    
+    _title = 'Q-Learning - Greedy vs e-Greedy (e = {0} - {1} Runs)'.format(_epsilon, runs)
+    fig.suptitle(_title)
 
 
     plt.show()
@@ -216,6 +221,6 @@ if __name__ == '__main__':
     
 #    runArmedBandit2Test()
 
-#    runArmedBandit3Test()
+    runArmedBandit3Test()
 
-    runQLearningTest()
+#    runQLearningTest()

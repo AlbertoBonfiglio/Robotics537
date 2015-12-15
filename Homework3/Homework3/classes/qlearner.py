@@ -112,7 +112,7 @@ class Explorer(object):
 
 class qLearner(object):
     
-    def __init__(self, state, exit, epsilon=0.0, alpha=0., gamma=0.9):
+    def __init__(self, state, exit, epsilon=0.0, alpha=0.2, gamma=0.9):
         self.q = {}
         self.epsilon = epsilon #e-greedy variable 
         self.alpha = alpha #learning rate
@@ -141,10 +141,10 @@ class qLearner(object):
         if oldValue is None:
             self.q[(state, action)] = reward
         else:
-            if state == self.exit:
-                self.q[(state, action)] = self.q[(state, action)]
-            else:    
-                self.q[(state, action)] += self.alpha * (value - oldValue)
+            #if state == self.exit:
+            #    self.q[(state, action)] = self.q[(state, action)]
+            #else:    
+            self.q[(state, action)] += self.alpha * (value - oldValue)
 
 
     def chooseAction(self, state):
